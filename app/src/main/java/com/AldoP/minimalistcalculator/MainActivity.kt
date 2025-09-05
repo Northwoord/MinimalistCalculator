@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity() {
                 valorIgual = true
             } catch (e: Exception) {
                 operaciones.text = "Error"
+                valorIgual = true
             }
         }
 
