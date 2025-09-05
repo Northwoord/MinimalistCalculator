@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
+        var valorIgual = false
         val operaciones = findViewById<TextView>(R.id.Resultados)
         val visualizacionOp = findViewById<TextView>(R.id.VisualizacionOp)
         val boton0 = findViewById<Button>(R.id.button_Cero)
@@ -39,22 +40,40 @@ class MainActivity : AppCompatActivity() {
         val parentesisDer = findViewById<Button>(R.id.button_ParentesisRigh)
 
 
+        fun AC(){
+            operaciones.text = "0"
+            visualizacionOp.text = ""
+        }
 
         fun agregarOperacion(valor: String) {
             val actual = operaciones.text.toString()
-            operaciones.text = if (actual == "0") valor else actual + valor
+            if (actual == "0" || valorIgual == true){
+                operaciones.text = valor
+                if (valorIgual == true){
+                    valorIgual = false
+                }
+            } else {
+                operaciones.text = actual + valor
+            }
         }
 
         fun agregarOperacionSimbolos(valor: String){
             val actual = operaciones.text.toString()
+            if (valorIgual == true){
+                valorIgual = false
+            }
             operaciones.text = actual + valor
         }
 
         fun retrocederOperacion() {
             val actual = operaciones.text.toString()
             if (actual.isNotEmpty()) {
-                val nuevo = actual.substring(0, actual.length - 1)
-                operaciones.text = nuevo
+                if (valorIgual == true){
+                    AC()
+                } else {
+                    val nuevo = actual.substring(0, actual.length - 1)
+                    operaciones.text = nuevo
+                }
             }
         }
 
@@ -86,15 +105,13 @@ class MainActivity : AppCompatActivity() {
                 val result = expression.evaluate()
                 operaciones.text = result.toString()
                 visualizacionOp.text = input
+                valorIgual = true
             } catch (e: Exception) {
                 operaciones.text = "Error"
             }
         }
 
-        botonAC.setOnClickListener {
-            operaciones.text = "0"
-            visualizacionOp.text = ""
-        }
+        botonAC.setOnClickListener {AC()}
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
